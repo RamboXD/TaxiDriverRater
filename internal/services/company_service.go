@@ -19,3 +19,16 @@ func NewCompanyService(repo repositories.CompanyRepository) *CompanyService {
 func (s *CompanyService) GetCompanyByID(ctx context.Context, id string) (*models.Company, error) {
 	return s.repo.GetCompanyByID(ctx, id)
 }
+
+func (s *CompanyService) RegisterCompany(ctx context.Context, iin, bin, address, headName, headSurname string, headPatronymic *string) error {
+	company := &models.Company{
+		IIN:            iin,
+		BIN:            bin,
+		Address:        address,
+		HeadName:       headName,
+		HeadSurname:    headSurname,
+		HeadPatronymic: headPatronymic,
+	}
+
+	return s.repo.CreateCompany(ctx, company)
+}

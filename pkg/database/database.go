@@ -4,8 +4,9 @@ package database
 import (
 	"context"
 	"fmt"
-	"os"
 	"time"
+
+	"github.com/ramboxd/taxidriverrater/pkg/config"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -14,10 +15,10 @@ var DB *pgxpool.Pool
 
 // InitDatabase initializes the database connection pool
 func InitDatabase() error {
-	// Get the database URL from the environment variables
-	dbURL := os.Getenv("DATABASE_URL")
+	// Use the DatabaseURL loaded from the config package
+	dbURL := config.DatabaseURL
 	if dbURL == "" {
-		return fmt.Errorf("DATABASE_URL environment variable is not set")
+		return fmt.Errorf("database url not found in the configuration")
 	}
 
 	// Set connection configuration (optional timeout setup)

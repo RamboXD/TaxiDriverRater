@@ -12,6 +12,7 @@ import (
 
 type CompanyRepository interface {
 	GetCompanyByID(ctx context.Context, id string) (*models.Company, error)
+	CreateCompany(ctx context.Context, company *models.Company) error
 }
 
 type companyRepository struct{}
@@ -32,4 +33,12 @@ func (r *companyRepository) GetCompanyByID(ctx context.Context, id string) (*mod
 	}
 	log.Info("Successfully retrieved company", zap.String("company_id", id))
 	return &company, nil
+}
+
+func (r *companyRepository) CreateCompany(ctx context.Context, company *models.Company) error {
+	_, err := database.DB.Exec(ctx, `
+        INSERT INTO company (iin, bin, address, head_name, head_surname, head_patronymic)
+        VALUES ($1, $2, $3, $4, $5, $6)
+    `, company.IIN, company.BIN, company.Address, company.HeadName, company.HeadSurname, company.HeadPatronymic)
+	return err
 }

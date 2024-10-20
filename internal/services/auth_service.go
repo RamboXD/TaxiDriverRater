@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/ramboxd/taxidriverrater/internal/models"
 	"github.com/ramboxd/taxidriverrater/internal/repositories"
 	"github.com/ramboxd/taxidriverrater/pkg/config"
 	"golang.org/x/crypto/bcrypt"
@@ -20,25 +21,26 @@ func NewAuthService(repo repositories.AuthRepository) *AuthService {
 	return &AuthService{repo: repo}
 }
 
-// Login checks if user credentials are valid
-func (s *AuthService) Login(ctx context.Context, email, password string) error {
+// Login checks the user's credentials and returns the user object with role IDs
+func (s *AuthService) Login(ctx context.Context, email, password string) (*models.User, error) {
 	user, err := s.repo.FindUserByEmail(ctx, email)
 	if err != nil {
-		return errors.New("user not found")
+		return nil, errors.New("user not found")
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
-		return errors.New("invalid credentials")
+		return nil, errors.New("invalid credentials")
 	}
 
-	return nil
+	return user, nil
 }
 
-// GenerateJWT creates a JWT token for the user
-func (s *AuthService) GenerateJWT(email string) (string, error) {
+// GenerateJWT creates a JWT token for the user using role-specific ID
+func (s *AuthService) GenerateJWT(roleID string, role string) (string, error) {
 	claims := jwt.MapClaims{
-		"sub": email,                                 // Subject (user email)
-		"exp": time.Now().Add(time.Hour * 24).Unix(), // Expiration time
+		"sub":  roleID,                                // Subject (role-specific ID)
+		"role": role,                                  // User's role (super_admin, company_admin, worker)
+		"exp":  time.Now().Add(time.Hour * 24).Unix(), // Expiration time
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

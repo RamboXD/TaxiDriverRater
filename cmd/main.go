@@ -11,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/ramboxd/taxidriverrater/internal/routes"
+	"github.com/ramboxd/taxidriverrater/pkg/config"
 	"github.com/ramboxd/taxidriverrater/pkg/database"
 	"github.com/ramboxd/taxidriverrater/pkg/logger"
 	"go.uber.org/zap"
@@ -20,6 +21,11 @@ func main() {
 	// Initialize logger
 	log := logger.NewColoredLogger()
 	defer log.Sync()
+
+	// Load configuration from environment variables
+	if err := config.LoadConfig(); err != nil {
+		log.Fatal("Failed to load configuration", zap.Error(err))
+	}
 
 	// Initialize the database
 	if err := database.InitDatabase(); err != nil {
