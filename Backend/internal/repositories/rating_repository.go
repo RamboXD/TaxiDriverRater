@@ -3,16 +3,19 @@ package repositories
 
 import (
 	"context"
+	"errors"
 
+	"github.com/jackc/pgconn"
 	"github.com/ramboxd/taxidriverrater/internal/models"
 	"github.com/ramboxd/taxidriverrater/pkg/database"
-	"github.com/ramboxd/taxidriverrater/pkg/logger"
-	"go.uber.org/zap"
 )
 
+var ErrCompanyAlreadyRated = errors.New("company has already rated this driver")
+
 type RatingRepository interface {
-	GetRatingsByDriverID(ctx context.Context, driverID string) ([]models.Rating, error)
+	CompanyHasRatedDriver(ctx context.Context, companyID, driverID string) (bool, error)
 	CreateRating(ctx context.Context, rating *models.Rating) error
+	GetRatingsWithCompanyData(ctx context.Context, driverID string) ([]models.RatingWithCompany, error)
 }
 
 type ratingRepository struct{}
@@ -21,38 +24,80 @@ func NewRatingRepository() RatingRepository {
 	return &ratingRepository{}
 }
 
-func (r *ratingRepository) GetRatingsByDriverID(ctx context.Context, driverID string) ([]models.Rating, error) {
-	log := logger.NewColoredLogger()
-	var ratings []models.Rating
-	rows, err := database.DB.Query(ctx, `SELECT * FROM ratings WHERE driver_id = $1`, driverID)
+func (r *ratingRepository) CompanyHasRatedDriver(ctx context.Context, companyID, driverID string) (bool, error) {
+	var exists bool
+	query := `SELECT EXISTS (SELECT 1 FROM ratings WHERE company_id = $1 AND driver_id = $2)`
+	err := database.DB.QueryRow(ctx, query, companyID, driverID).Scan(&exists)
 	if err != nil {
-		log.Error("Failed to get ratings for driver", zap.Error(err))
+		return false, err
+	}
+	return exists, nil
+}
+
+func (r *ratingRepository) CreateRating(ctx context.Context, rating *models.Rating) error {
+	_, err := database.DB.Exec(ctx, `
+		INSERT INTO ratings (driver_id, company_id, rating, description, created_at, updated_at)
+		VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+	`, rating.DriverID, rating.CompanyID, rating.Rating, rating.Description)
+
+	if err != nil {
+		if pgErr, ok := err.(*pgconn.PgError); ok && pgErr.Code == "23505" {
+			return ErrCompanyAlreadyRated
+		}
+		return err
+	}
+
+	return nil
+}
+
+func (r *ratingRepository) GetRatingsWithCompanyData(ctx context.Context, driverID string) ([]models.RatingWithCompany, error) {
+	ratingsWithCompany := make([]models.RatingWithCompany, 0)
+
+	query := `
+		SELECT 
+			r.id,
+			r.driver_id,
+			r.company_id,
+			r.rating,
+			r.description,
+			r.created_at,
+			r.updated_at,
+			c.name as company_name,
+			c.address as company_address
+		FROM 
+			ratings r
+		JOIN 
+			company c ON r.company_id = c.id
+		WHERE 
+			r.driver_id = $1
+	`
+	rows, err := database.DB.Query(ctx, query, driverID)
+	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var rating models.Rating
-		if err := rows.Scan(&rating.ID, &rating.DriverID, &rating.WorkerID, &rating.Rating, &rating.Description, &rating.CreatedAt, &rating.UpdatedAt); err != nil {
-			log.Error("Failed to scan rating", zap.Error(err))
+		var ratingWithCompany models.RatingWithCompany
+		if err := rows.Scan(
+			&ratingWithCompany.Rating.ID,
+			&ratingWithCompany.Rating.DriverID,
+			&ratingWithCompany.Rating.CompanyID,
+			&ratingWithCompany.Rating.Rating,
+			&ratingWithCompany.Rating.Description,
+			&ratingWithCompany.Rating.CreatedAt,
+			&ratingWithCompany.Rating.UpdatedAt,
+			&ratingWithCompany.Company.Name,
+			&ratingWithCompany.Company.Address,
+		); err != nil {
 			return nil, err
 		}
-		ratings = append(ratings, rating)
+		ratingsWithCompany = append(ratingsWithCompany, ratingWithCompany)
 	}
 
-	log.Info("Successfully retrieved ratings for driver", zap.String("driver_id", driverID))
-	return ratings, nil
-}
-
-func (r *ratingRepository) CreateRating(ctx context.Context, rating *models.Rating) error {
-	log := logger.NewColoredLogger()
-	_, err := database.DB.Exec(ctx, `
-        INSERT INTO ratings (driver_id, worker_id, rating, description) VALUES ($1, $2, $3, $4)
-    `, rating.DriverID, rating.WorkerID, rating.Rating, rating.Description)
-	if err != nil {
-		log.Error("Failed to create rating", zap.Error(err))
-		return err
+	if err := rows.Err(); err != nil {
+		return nil, err
 	}
-	log.Info("Successfully created rating", zap.String("driver_id", rating.DriverID))
-	return nil
+
+	return ratingsWithCompany, nil
 }
