@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: .
+    command: npm run preview
+    ports:
+      - "3001:3001"
+    networks:
+      - shared_network
+
+
+networks:
+  shared_network:
+    driver: bridge
+    name: shared_network
