@@ -36,3 +36,14 @@ type UserWithCompany struct {
 	Company Company    `json:"company"`
 	Role    string     `json:"role"`
 }
+
+type UserWithRole struct {
+	IIN        string    `db:"iin"`
+	Name       string    `db:"name"`
+	Surname    string    `db:"surname"`
+	Patronymic *string   `db:"patronymic"`
+	Email      string    `db:"email"`
+	CreatedAt  time.Time `db:"created_at"`
+	UpdatedAt  time.Time `db:"updated_at"`
+	Role       string    `db:"role"`
+}

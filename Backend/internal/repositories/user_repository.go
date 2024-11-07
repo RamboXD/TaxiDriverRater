@@ -12,6 +12,7 @@ type UserRepository interface {
 	FindUserByID(ctx context.Context, userID string) (*models.User, error)
 	FindUserByEmail(ctx context.Context, email string) (*models.User, error)
 	CreateUser(ctx context.Context, user *models.User) error
+	GetUsersByCompanyID(ctx context.Context, companyID string) ([]models.UserWithRole, error)
 }
 
 type userRepository struct{}
@@ -56,4 +57,38 @@ func (r *userRepository) FindUserByID(ctx context.Context, userID string) (*mode
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *userRepository) GetUsersByCompanyID(ctx context.Context, companyID string) ([]models.UserWithRole, error) {
+	users := make([]models.UserWithRole, 0)
+	query := `
+		SELECT u.iin, u.name, u.surname, u.patronymic, u.email, u.created_at, u.updated_at,
+		       CASE
+			       WHEN u.super_admin_id IS NOT NULL THEN 'super_admin'
+			       WHEN u.company_admin_id IS NOT NULL THEN 'company_admin'
+			       WHEN u.worker_id IS NOT NULL THEN 'worker'
+			       ELSE 'unknown'
+		       END AS role
+		FROM users u
+		WHERE u.company_id = $1
+	`
+	rows, err := database.DB.Query(ctx, query, companyID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var user models.UserWithRole
+		err := rows.Scan(
+			&user.IIN, &user.Name, &user.Surname, &user.Patronymic,
+			&user.Email, &user.CreatedAt, &user.UpdatedAt, &user.Role,
+		)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	return users, nil
 }

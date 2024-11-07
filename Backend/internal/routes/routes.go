@@ -21,7 +21,7 @@ func RegisterRoutes(r *gin.Engine) {
 	authRepo := repositories.NewAuthRepository()
 
 	userService := services.NewUserService(userRepo, companyRepo)
-	companyService := services.NewCompanyService(companyRepo)
+	companyService := services.NewCompanyService(companyRepo, userRepo)
 	driverService := services.NewDriverService(driverRepo, ratingRepo)
 	ratingService := services.NewRatingService(ratingRepo, driverRepo)
 	authService := services.NewAuthService(userRepo, string(config.JWTSecret))

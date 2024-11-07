@@ -13,11 +13,12 @@ import (
 var ErrCompanyExists = errors.New("company already exists")
 
 type CompanyService struct {
-	repo repositories.CompanyRepository
+	repo     repositories.CompanyRepository
+	userRepo repositories.UserRepository
 }
 
-func NewCompanyService(repo repositories.CompanyRepository) *CompanyService {
-	return &CompanyService{repo: repo}
+func NewCompanyService(repo repositories.CompanyRepository, userRepo repositories.UserRepository) *CompanyService {
+	return &CompanyService{repo: repo, userRepo: userRepo}
 }
 
 func (s *CompanyService) RegisterCompany(ctx context.Context, req dto.CompanyRegisterRequest) error {
@@ -25,6 +26,7 @@ func (s *CompanyService) RegisterCompany(ctx context.Context, req dto.CompanyReg
 		IIN:            req.IIN,
 		BIN:            req.BIN,
 		Address:        req.Address,
+		Name:           req.Name,
 		HeadName:       req.HeadName,
 		HeadSurname:    req.HeadSurname,
 		HeadPatronymic: req.HeadPatronymic,
@@ -39,4 +41,24 @@ func (s *CompanyService) RegisterCompany(ctx context.Context, req dto.CompanyReg
 
 func (s *CompanyService) GetAllCompanies(ctx context.Context) ([]models.Company, error) {
 	return s.repo.GetAllCompanies(ctx)
+}
+
+func (s *CompanyService) GetCompanyWithUsers(ctx context.Context, companyID string) (map[string]interface{}, error) {
+	company, err := s.repo.FindCompanyByID(ctx, companyID)
+	if err != nil {
+		return nil, errors.New("company not found")
+	}
+
+	users, err := s.userRepo.GetUsersByCompanyID(ctx, companyID)
+	if err != nil {
+		return nil, errors.New("failed to retrieve users")
+	}
+
+	// Prepare response
+	companyData := map[string]interface{}{
+		"company": company,
+		"users":   users,
+	}
+
+	return companyData, nil
 }

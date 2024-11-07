@@ -38,7 +38,7 @@ func (r *companyRepository) CompanyExists(ctx context.Context, companyID string)
 func (r *companyRepository) CreateCompany(ctx context.Context, company *models.Company) error {
 	_, err := database.DB.Exec(ctx, `
         INSERT INTO company (iin, bin, address, name, head_name, head_surname, head_patronymic, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, &7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
     `, company.IIN, company.BIN, company.Address, company.Name, company.HeadName, company.HeadSurname, company.HeadPatronymic)
 
 	if err != nil {
@@ -53,7 +53,11 @@ func (r *companyRepository) CreateCompany(ctx context.Context, company *models.C
 
 func (r *companyRepository) FindCompanyByID(ctx context.Context, companyID string) (*models.Company, error) {
 	var company models.Company
-	query := `SELECT * FROM company WHERE id = $1`
+	query := `
+		SELECT id, iin, bin, address, head_name, head_surname, head_patronymic, created_at, updated_at, name 
+		FROM company 
+		WHERE id = $1
+	`
 	err := database.DB.QueryRow(ctx, query, companyID).Scan(
 		&company.ID, &company.IIN, &company.BIN, &company.Address,
 		&company.HeadName, &company.HeadSurname, &company.HeadPatronymic,

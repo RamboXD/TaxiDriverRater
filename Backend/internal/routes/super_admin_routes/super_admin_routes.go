@@ -95,4 +95,17 @@ func RegisterSuperAdminRoutes(r *gin.RouterGroup, userService *services.UserServ
 
 		c.JSON(http.StatusOK, gin.H{"companies": companies})
 	})
+
+	r.GET("/companies/:company_id", func(c *gin.Context) {
+		companyID := c.Param("company_id")
+
+		companyData, err := companyService.GetCompanyWithUsers(c.Request.Context(), companyID)
+		if err != nil {
+			log.Error("Failed to fetch company data: ", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch company data"})
+			return
+		}
+
+		c.JSON(http.StatusOK, companyData)
+	})
 }
