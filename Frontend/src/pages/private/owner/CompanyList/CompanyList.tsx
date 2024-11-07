@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
+  ActionIcon,
   Avatar,
   Button,
   Center,
@@ -30,9 +31,12 @@ import { CompanyProfile } from 'types/profileTypes';
 import useCompanies from 'hooks/company/useCompanies';
 import DrawerCompanyCreateForm from './components/DrawerCompanyCreateForm';
 import Table from 'components/Table';
+import { useNavigate } from 'react-router-dom';
 
 const CompanyList = () => {
   const theme = useMantineTheme();
+
+  const navigate = useNavigate();
 
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -115,20 +119,36 @@ const CompanyList = () => {
               { Header: 'Название', accessor: 'Name' },
               { Header: 'Адрес', accessor: 'Address' },
               { Header: 'ИНН', accessor: 'IIN' },
-              { Header: 'BIN', accessor: 'BIN' },
+              { Header: 'БИН', accessor: 'BIN' },
               {
                 Header: 'Действия',
-                Cell: ({}: { row: { original: CompanyProfile } }) => (
+                Cell: ({ row }: { row: { original: CompanyProfile } }) => (
                   <Group>
                     <Tooltip label='Посмотреть детали'>
-                      <Button variant='subtle' color='yellow' size='sm'>
-                        <IconEye size={theme.fontSizes.md} />
-                      </Button>
+                      <ActionIcon
+                        onClick={() => {
+                          navigate(`/company/${row.original.ID}`);
+                        }}
+                        variant='light'
+                        color='yellow'
+                        size='lg'
+                      >
+                        <IconEye size={theme.fontSizes.lg} />
+                      </ActionIcon>
                     </Tooltip>
                     <Tooltip label='Редактировать'>
-                      <Button variant='subtle' color='green' size='sm'>
+                      <ActionIcon
+                        //   onClick={() => {
+                        //     setOrderId(row.original.id);
+                        //     setStatus(row.original.status);
+                        //     openEditModal();
+                        //   }}
+                        variant='light'
+                        color='green'
+                        size='lg'
+                      >
                         <IconPencil size={theme.fontSizes.md} />
-                      </Button>
+                      </ActionIcon>
                     </Tooltip>
                   </Group>
                 ),

@@ -8,33 +8,36 @@ import {
 } from 'utils/notifications';
 
 interface CreateCompanyPayload {
-  // companyName: string;
+  name: string;
   address: string;
   iin: string;
   bin: string;
+  head_name: string;
+  head_surname: string;
+  head_patronymic?: string; // Optional field
 }
 
 export default function useCreateCompany(): UseMutationResult<
   AxiosResponse<CompanyProfile>,
-  AxiosError<{ message: string }>,
+  AxiosError<{ error: string }>,
   CreateCompanyPayload
 > {
   const client = useClient();
   const queryClient = useQueryClient();
 
   const createCompany = (payload: CreateCompanyPayload) => {
-    return client.post('/companies', payload);
+    return client.post('/auth/register/company', payload);
   };
 
   return useMutation(createCompany, {
     onSuccess: () => {
       showSuccessNotification('Компания успешно создана');
-      queryClient.invalidateQueries('companies'); // Invalidate the cache for companies list
+      queryClient.invalidateQueries('auth/register/company'); // Invalidate the cache for companies list
     },
     onError: (error) => {
       showErrorNotification(
         'Ошибка создания компании',
-        error.response?.data.message || 'Не удалось создать компанию',
+        error.response?.data.error || 'Не удалось создать компанию',
       );
     },
   });

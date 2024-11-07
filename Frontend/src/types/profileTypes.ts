@@ -70,3 +70,41 @@ export type UserProfile = {
   company?: CompanyProfile;
   role: 'super_admin' | 'company_admin' | 'worker';
 };
+
+// types/profileTypes.ts
+
+export enum UserRole {
+  SuperAdmin = 'super_admin',
+  CompanyAdmin = 'company_admin',
+  Worker = 'worker',
+}
+
+export type GetCompanyCompanyProfile = {
+  ID: string;
+  IIN: string;
+  BIN: string;
+  Address: string;
+  Name: string;
+  HeadName: string;
+  HeadSurname: string;
+  HeadPatronymic: string | null;
+  CreatedAt: string;
+  UpdatedAt: string;
+};
+
+export type GetCompanyUserProfile = {
+  IIN: string;
+  Name: string;
+  Surname: string;
+  Patronymic: string | null;
+  Email: string;
+  CreatedAt: string;
+  UpdatedAt: string;
+  Role: UserRole;
+};
+
+// Define a response structure if needed
+export type CompanyWithUsersResponse = {
+  company: GetCompanyCompanyProfile;
+  users: GetCompanyUserProfile[];
+};

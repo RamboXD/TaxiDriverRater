@@ -1,5 +1,6 @@
 import Branches from 'pages/private/owner/Branches';
 import Cart from 'pages/private/owner/Cart';
+import Company from 'pages/private/owner/Company';
 import CompanyList from 'pages/private/owner/CompanyList';
 import Home from 'pages/private/owner/Home';
 import Orders from 'pages/private/owner/Orders';
@@ -17,6 +18,7 @@ export const ownerRoutesMap: RoutesMap = {
   '*': <NotFound />,
   '/': <Home />,
   '/companies': <CompanyList />,
+  '/company/:id': <Company />,
   '/orders': <Orders />,
   '/branches': <Branches />,
   '/staffs': <Staffs />,
