@@ -33,9 +33,6 @@ func (s *RatingService) RateDriver(ctx context.Context, req dto.RateDriverReques
 	if err != nil {
 		return errors.New("failed to check if rating exists")
 	}
-	if ratingExists {
-		return errors.New("company has already rated this driver")
-	}
 
 	rating := &models.Rating{
 		DriverID:    req.DriverID,
@@ -44,9 +41,14 @@ func (s *RatingService) RateDriver(ctx context.Context, req dto.RateDriverReques
 		Description: req.Description,
 	}
 
-	err = s.repo.CreateRating(ctx, rating)
+	if ratingExists {
+		err = s.repo.UpdateRating(ctx, rating)
+	} else {
+		err = s.repo.CreateRating(ctx, rating)
+	}
+
 	if err != nil {
-		return fmt.Errorf("failed to create rating %w", err)
+		return fmt.Errorf("failed to save rating: %w", err)
 	}
 
 	return nil

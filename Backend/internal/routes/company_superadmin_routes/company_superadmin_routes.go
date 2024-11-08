@@ -11,7 +11,7 @@ import (
 	"github.com/ramboxd/taxidriverrater/pkg/logger"
 )
 
-func RegisterCompanySuperAdminRoutes(r *gin.RouterGroup, userService *services.UserService, driverService *services.DriverService, ratingService *services.RatingService) {
+func RegisterCompanySuperAdminRoutes(r *gin.RouterGroup, userService *services.UserService, driverService *services.DriverService, ratingService *services.RatingService, companyService *services.CompanyService) {
 	log := logger.NewColoredLogger()
 
 	r.POST("/register/worker", func(c *gin.Context) {
@@ -93,5 +93,22 @@ func RegisterCompanySuperAdminRoutes(r *gin.RouterGroup, userService *services.U
 
 		log.Info("Driver rated successfully")
 		c.JSON(http.StatusOK, gin.H{"message": "Driver rated successfully"})
+	})
+	r.GET("/company", func(c *gin.Context) {
+		companyID, exists := c.Get("companyID")
+		if !exists {
+			log.Error("Failed to retrieve company ID from context")
+			c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
+			return
+		}
+
+		companyData, err := companyService.GetCompanyWithUsers(c.Request.Context(), companyID.(string))
+		if err != nil {
+			log.Error("Failed to fetch company data: ", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch company data"})
+			return
+		}
+
+		c.JSON(http.StatusOK, companyData)
 	})
 }

@@ -5,7 +5,6 @@ import (
 	"context"
 	"errors"
 
-	"github.com/jackc/pgconn"
 	"github.com/ramboxd/taxidriverrater/internal/models"
 	"github.com/ramboxd/taxidriverrater/pkg/database"
 )
@@ -15,6 +14,7 @@ var ErrCompanyAlreadyRated = errors.New("company has already rated this driver")
 type RatingRepository interface {
 	CompanyHasRatedDriver(ctx context.Context, companyID, driverID string) (bool, error)
 	CreateRating(ctx context.Context, rating *models.Rating) error
+	UpdateRating(ctx context.Context, rating *models.Rating) error
 	GetRatingsWithCompanyData(ctx context.Context, driverID string) ([]models.RatingWithCompany, error)
 }
 
@@ -39,15 +39,16 @@ func (r *ratingRepository) CreateRating(ctx context.Context, rating *models.Rati
 		INSERT INTO ratings (driver_id, company_id, rating, description, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 	`, rating.DriverID, rating.CompanyID, rating.Rating, rating.Description)
+	return err
+}
 
-	if err != nil {
-		if pgErr, ok := err.(*pgconn.PgError); ok && pgErr.Code == "23505" {
-			return ErrCompanyAlreadyRated
-		}
-		return err
-	}
-
-	return nil
+func (r *ratingRepository) UpdateRating(ctx context.Context, rating *models.Rating) error {
+	_, err := database.DB.Exec(ctx, `
+		UPDATE ratings
+		SET rating = $1, description = $2, updated_at = CURRENT_TIMESTAMP
+		WHERE driver_id = $3 AND company_id = $4
+	`, rating.Rating, rating.Description, rating.DriverID, rating.CompanyID)
+	return err
 }
 
 func (r *ratingRepository) GetRatingsWithCompanyData(ctx context.Context, driverID string) ([]models.RatingWithCompany, error) {

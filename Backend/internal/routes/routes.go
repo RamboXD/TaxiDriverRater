@@ -34,7 +34,7 @@ func RegisterRoutes(r *gin.Engine) {
 
 	companySuperAdminGroup := r.Group("/auth")
 	companySuperAdminGroup.Use(middleware.RoleChecker(authRepo, "super_admin", "company_admin"))
-	company_superadmin_routes.RegisterCompanySuperAdminRoutes(companySuperAdminGroup, userService, driverService, ratingService)
+	company_superadmin_routes.RegisterCompanySuperAdminRoutes(companySuperAdminGroup, userService, driverService, ratingService, companyService)
 
 	sharedGroup := r.Group("/auth")
 	sharedGroup.Use(middleware.RoleChecker(authRepo, "super_admin", "company_admin", "worker"))
