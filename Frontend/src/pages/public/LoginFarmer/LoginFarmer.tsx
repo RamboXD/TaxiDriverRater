@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Anchor,
   Button,
+  Image,
   Input,
   Paper,
   PasswordInput,

@@ -1,6 +1,8 @@
-import Cart from 'pages/private/owner/Cart';
-import Home from 'pages/private/owner/Home';
-import Orders from 'pages/private/owner/Orders';
+import Cart from 'pages/private/superadmin/Cart';
+import Home from 'pages/private/worker/Home';
+import Orders from 'pages/private/superadmin/Orders';
+import Driver from 'pages/private/worker/Driver';
+import DriverList from 'pages/private/worker/DriverList';
 import NotFound from 'pages/shared/NotFound';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { RoutesMap } from 'routes/types';
@@ -10,8 +12,10 @@ export const staffRoutesMap: RoutesMap = {
   '/register': <Navigate to='/' replace />,
   '*': <NotFound />,
   '/': <Home />,
-  '/orders': <Orders />,
-  '/cart': <Cart />,
+  '/drivers': <DriverList />,
+  '/drivers/:id': <Driver />,
+  // '/orders': <Orders />,
+  // '/cart': <Cart />,
 };
 
 const Staff = () => {

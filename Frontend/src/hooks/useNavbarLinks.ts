@@ -31,20 +31,20 @@ const superAdminItems: NavbarLink[] = [
     Icon: IconBuilding,
   },
   {
-    label: 'Orders',
-    path: '/orders',
+    label: 'Водители',
+    path: '/drivers',
     Icon: IconNotes,
   },
-  {
-    label: 'Billing',
-    path: '/billing',
-    Icon: IconCopy,
-  },
-  {
-    label: 'Settings',
-    path: '/settings',
-    Icon: IconSettings,
-  },
+  // {
+  //   label: 'Billing',
+  //   path: '/billing',
+  //   Icon: IconCopy,
+  // },
+  // {
+  //   label: 'Settings',
+  //   path: '/settings',
+  //   Icon: IconSettings,
+  // },
 ];
 
 const companyAdminItems: NavbarLink[] = [
@@ -53,41 +53,51 @@ const companyAdminItems: NavbarLink[] = [
     path: '/',
     Icon: IconHome,
   },
+  {
+    label: 'Компания',
+    path: '/company',
+    Icon: IconBuilding,
+  },
+  {
+    label: 'Водители',
+    path: '/drivers',
+    Icon: IconNotes,
+  },
   // {
   //   label: 'Notifications',
   //   path: '/notifications',
   //   Icon: IconBell,
   // },
-  {
-    label: 'Cart',
-    path: '/cart',
-    Icon: IconShoppingCart,
-  },
-  {
-    label: 'Orders',
-    path: '/orders',
-    Icon: IconFileDescription,
-  },
-  {
-    label: 'Branches',
-    path: '/branches',
-    Icon: IconBuilding,
-  },
-  {
-    label: 'Billing',
-    path: '/billing',
-    Icon: IconCopy,
-  },
+  // {
+  //   label: 'Cart',
+  //   path: '/cart',
+  //   Icon: IconShoppingCart,
+  // },
+  // {
+  //   label: 'Orders',
+  //   path: '/orders',
+  //   Icon: IconFileDescription,
+  // },
+  // {
+  //   label: 'Branches',
+  //   path: '/branches',
+  //   Icon: IconBuilding,
+  // },
+  // {
+  //   label: 'Billing',
+  //   path: '/billing',
+  //   Icon: IconCopy,
+  // },
   // {
   //   label: 'Staffs',
   //   path: '/staffs',
   //   Icon: IconUsers,
   // },
-  {
-    label: 'Settings',
-    path: '/settings',
-    Icon: IconSettings,
-  },
+  // {
+  //   label: 'Settings',
+  //   path: '/settings',
+  //   Icon: IconSettings,
+  // },
 ];
 
 const workerItems: NavbarLink[] = [
@@ -97,25 +107,30 @@ const workerItems: NavbarLink[] = [
     Icon: IconHome,
   },
   {
-    label: 'Notifications',
-    path: '/notifications',
-    Icon: IconBell,
+    label: 'Водители',
+    path: '/drivers',
+    Icon: IconNotes,
   },
-  {
-    label: 'Cart',
-    path: '/cart',
-    Icon: IconShoppingCart,
-  },
-  {
-    label: 'Orders',
-    path: '/orders',
-    Icon: IconFileDescription,
-  },
-  {
-    label: 'Settings',
-    path: '/settings',
-    Icon: IconSettings,
-  },
+  // {
+  //   label: 'Notifications',
+  //   path: '/notifications',
+  //   Icon: IconBell,
+  // },
+  // {
+  //   label: 'Cart',
+  //   path: '/cart',
+  //   Icon: IconShoppingCart,
+  // },
+  // {
+  //   label: 'Orders',
+  //   path: '/orders',
+  //   Icon: IconFileDescription,
+  // },
+  // {
+  //   label: 'Settings',
+  //   path: '/settings',
+  //   Icon: IconSettings,
+  // },
 ];
 
 export default function useNavbarLinks(

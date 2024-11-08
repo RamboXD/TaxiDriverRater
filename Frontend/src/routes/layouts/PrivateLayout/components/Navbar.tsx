@@ -81,7 +81,7 @@ const Navbar = ({ opened }: NavbarProps) => {
 
   const { profile, logout }: { profile: UserProfile; logout: () => void } =
     useAuth();
-
+  profile.company?.ID;
   const currentPathname = useCurrentRoute();
   const navbarLinks = useNavbarLinks(profile.role);
 
@@ -117,7 +117,7 @@ const Navbar = ({ opened }: NavbarProps) => {
         <MediaQuery smallerThan='md' styles={{ display: 'none' }}>
           <Stack spacing='xs'>
             <Image
-              src='/images/logo/logo-green.png'
+              src='/images/logo/logo_nav.png'
               alt='fresh-market-logo'
               height={28}
               my='xl'
@@ -156,7 +156,7 @@ const Navbar = ({ opened }: NavbarProps) => {
               stroke={1.5}
             />
             <Title order={6} weight={600}>
-              Logout
+              Выйти
             </Title>
           </Group>
         </Button>

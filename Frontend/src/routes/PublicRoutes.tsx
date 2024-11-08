@@ -9,11 +9,11 @@ import { RoutesMap } from './types';
 
 export const publicRoutesMap: RoutesMap = {
   '/login': <LoginFarmer />,
-  '/login/farmer': <LoginFarmer />,
-  '/login/business': <LoginBusiness />,
-  '/login/broker': <LoginBroker />,
-  '/register/business': <RegisterBusiness />,
-  '/register/farmer': <RegisterFarmer />,
+  // '/login/farmer': <LoginFarmer />,
+  // '/login/business': <LoginBusiness />,
+  // '/login/broker': <LoginBroker />,
+  // '/register/business': <RegisterBusiness />,
+  // '/register/farmer': <RegisterFarmer />,
   '*': <Navigate to='/login' />,
 };
 

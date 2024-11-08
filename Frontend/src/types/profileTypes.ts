@@ -108,3 +108,50 @@ export type CompanyWithUsersResponse = {
   company: GetCompanyCompanyProfile;
   users: GetCompanyUserProfile[];
 };
+
+export interface DriverProfile {
+  ID: string;
+  IIN: string;
+  Name: string;
+  Surname: string;
+  Patronymic: string | null;
+  Category: string;
+  DtpDate: string | null;
+  Penalty: boolean;
+  InsuranceData: string;
+  InsuranceNumber: string;
+  Address: string;
+  PhoneNumber: string;
+  CreatedAt: string;
+  UpdatedAt: string;
+}
+
+export interface GetDriversResponse {
+  drivers: DriverProfile[];
+}
+
+export interface CompanyInfo {
+  Name: string;
+  Address: string;
+}
+
+export interface RatingInfo {
+  ID: string;
+  DriverID: string;
+  CompanyID: string;
+  Rating: number;
+  Description: string;
+  CreatedAt: string;
+  UpdatedAt: string;
+}
+
+export interface RatingWithCompany {
+  Rating: RatingInfo;
+  Company: CompanyInfo;
+}
+
+export interface DriverWithRatingsResponse {
+  average_rating: number;
+  driver: DriverProfile;
+  ratings: RatingWithCompany[];
+}

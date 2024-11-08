@@ -8,8 +8,7 @@ export default function useCompanyWithWorkers(
 ): UseQueryResult<AxiosResponse<CompanyWithUsersResponse>, AxiosError> {
   const client = useClient();
 
-  const fetchCompanyWithWorkers = () =>
-    client.get(`/auth/companies/${companyId}`);
+  const fetchCompanyWithWorkers = () => client.get(`/auth/company`);
 
   return useQuery(['companyWithWorkers', companyId], fetchCompanyWithWorkers, {
     enabled: !!companyId,

@@ -1,10 +1,13 @@
-import Billing from 'pages/private/farmer/Billing';
-import Farms from 'pages/private/farmer/Farms';
-import Home from 'pages/private/farmer/Home';
-import OrderItems from 'pages/private/farmer/OrderItems';
-import Orders from 'pages/private/farmer/Orders';
-import Settings from 'pages/private/farmer/Settings';
-import Sort from 'pages/private/farmer/Sort';
+import Billing from 'pages/private/companyadmin/Billing';
+import Company from 'pages/private/companyadmin/Company';
+import Driver from 'pages/private/companyadmin/Driver';
+import DriverList from 'pages/private/companyadmin/DriverList';
+import Farms from 'pages/private/companyadmin/Farms';
+import Home from 'pages/private/companyadmin/Home';
+import OrderItems from 'pages/private/companyadmin/OrderItems';
+import Orders from 'pages/private/companyadmin/Orders';
+import Settings from 'pages/private/companyadmin/Settings';
+import Sort from 'pages/private/companyadmin/Sort';
 import NotFound from 'pages/shared/NotFound';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { RoutesMap } from 'routes/types';
@@ -14,12 +17,15 @@ export const farmerRoutesMap: RoutesMap = {
   '/register': <Navigate to='/' replace />,
   '*': <NotFound />,
   '/': <Home />,
-  '/farms': <Farms />,
-  '/billing': <Billing />,
-  '/orders': <Orders />,
-  '/order_items': <OrderItems />,
-  '/settings': <Settings />,
-  '/sorts/:id': <Sort />,
+  '/company': <Company />,
+  '/drivers': <DriverList />,
+  '/drivers/:id': <Driver />,
+  // '/farms': <Farms />,
+  // '/billing': <Billing />,
+  // '/orders': <Orders />,
+  // '/order_items': <OrderItems />,
+  // '/settings': <Settings />,
+  // '/sorts/:id': <Sort />,
   // '/login': <Navigate to='/' replace />,
   // '/register': <Navigate to='/' replace />,
 };

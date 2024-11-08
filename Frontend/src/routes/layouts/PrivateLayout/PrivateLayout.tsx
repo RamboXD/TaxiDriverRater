@@ -12,9 +12,7 @@ interface PrivateLayoutProps {
 
 const PrivateLayout = ({ children }: PrivateLayoutProps) => {
   const [opened, { toggle }] = useDisclosure(false);
-  console.log('====================================');
-  console.log('here');
-  console.log('====================================');
+
   return (
     <AppShell
       padding='md'
