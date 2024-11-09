@@ -35,10 +35,10 @@ import {
   GetCompanyUserProfile,
   UserProfile,
 } from 'types/profileTypes';
-import useCompanyWithWorkers from 'hooks/company/useCompanyWithWorkers';
 import DrawerWorkerCreateForm from './components/DrawerWorkerCreateForm';
 import Table from 'components/Table';
 import { useAuth } from 'contexts/AuthContext';
+import useCompany from 'hooks/company/useCompany';
 
 const Company = () => {
   const { profile }: { profile: UserProfile; logout: () => void } = useAuth();
@@ -47,7 +47,7 @@ const Company = () => {
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
-  const { data, isLoading, isSuccess, isError } = useCompanyWithWorkers(
+  const { data, isLoading, isSuccess, isError } = useCompany(
     profile.company?.ID,
   );
 

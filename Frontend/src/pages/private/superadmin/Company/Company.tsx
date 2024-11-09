@@ -108,10 +108,6 @@ const Company = () => {
       {isSuccess && (
         <>
           {/* Workers Table */}
-          <Flex direction='column'>
-            <Title weight={700}>Сотрудники</Title>
-            <Text color='dimmed'>Список сотрудников компании</Text>
-          </Flex>
 
           <Grid columns={10} my='md'>
             <Grid.Col sm={10} md={4}>
