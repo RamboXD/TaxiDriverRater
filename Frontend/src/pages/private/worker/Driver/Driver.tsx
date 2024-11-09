@@ -156,14 +156,16 @@ const DriverProfilePage = () => {
               </Card>
             ) : (
               <Group position='center' my='md'>
-                <Button
-                  leftIcon={<IconPlus size={16} />}
-                  variant='light'
-                  color='blue'
-                  onClick={handleCreateRating}
-                >
-                  Добавить отзыв
-                </Button>
+                <EmptyState
+                  mt='xl'
+                  title='Нету данных'
+                  description=''
+                  Icon={
+                    <Avatar radius='100%' size='xl' variant='light' color='red'>
+                      <IconFileAlert size={25} />
+                    </Avatar>
+                  }
+                />
               </Group>
             )}
           </Flex>
